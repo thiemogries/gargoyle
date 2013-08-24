@@ -35,7 +35,11 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-	if (Auth::guest()) return Redirect::guest('login');
+	if (Auth::guest()) return Response::json(array(
+		'error' => '401')
+	);
+	// if (Auth::guest()) App::abort(401, 'You are not authorized.');
+	// if (Auth::guest()) return Redirect::guest('login');
 });
 
 
