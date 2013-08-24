@@ -32,22 +32,26 @@
             <script>
                 // var data = { "user": "1", "url": "www.wurst.de" }
                 var data = {
-                   "email": "hello@world.de",
-                   "name": "Nikola Tesla",
+                   // "email": "hello@world.de",
+                   "name": "Tesla",
                    "password": "123456"
                 }
 
                 // fire off the request
                 $.ajax({
-                    url: "user/new",
+                    // url: "user/new",
+                    url: "login",
+                    // url: "feed/1",
                     type: "post",
-                    data: data,
+                    // data: null,
+                    data: {"name": "Tesla", "password": "123456"},
+                    // data: data,
                     success: function (response) {
-                      console.log(response);
+                        console.log(response);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                      console.log("The following error occured: "+
-                        textStatus, errorThrown);
+                        console.log("The following error occured: "+
+                            textStatus, errorThrown);
                     }
                 });
             </script>
