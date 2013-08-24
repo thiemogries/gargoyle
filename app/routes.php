@@ -11,7 +11,6 @@
 |
 */
 Route::model('user', 'User');
-Route::model('follower', 'User');
 Route::model('link', 'Link');
 
 Route::get('/', function()
@@ -51,7 +50,7 @@ Route::any('/user/new', function() {
 		$user->follower()->attach($user);
 		$user->save();
 
-		return $user->id;
+		return $user;
 	}
 });
 
@@ -59,8 +58,8 @@ Route::any('/user/{user}', array('before' => 'auth', function(User $user) {
 	return $user;
 }));
 
-Route::any('/push/{user}', array('before' => 'auth', function(User $user) {
-
+Route::any('/push', array('before' => 'auth', function() {
+	$user = Auth::user();
 	$url = Input::get('url', '');
 
 	if (strlen($url) > 0) {
@@ -68,6 +67,7 @@ Route::any('/push/{user}', array('before' => 'auth', function(User $user) {
 		$link->url = $url;
 		$link->user()->associate($user);
 		$link->save();
+		return $link;
 	}
 }));
 
@@ -75,19 +75,18 @@ Route::any('/delete/{link}', array('before' => 'auth', function(Link $link) {
 	$link->delete();
 }));
 
-Route::any('/feed/{user}/me', array('before' => 'auth', function(User $user) {
-	return $user->links;
-}));
-
-Route::any('/follow/{user}/by/{follower}', array('before' => 'auth', function(User $user, User $follower) {
+Route::any('/follow/{user}', array('before' => 'auth', function(User $user) {
+	$follower = Auth::user();
 	$user->follower()->attach($follower);
 }));
 
-Route::any('/unfollow/{user}/by/{follower}', array('before' => 'auth', function(User $user, User $follower) {
+Route::any('/unfollow/{user}', array('before' => 'auth', function(User $user) {
+	$follower = Auth::user();
 	$user->follower()->detach($follower);
 }));
 
-Route::any('/feed/{user}', array('before' => 'auth', function(User $user) {
+Route::any('/feed', array('before' => 'auth', function() {
+	$user = Auth::user();
 	$result = DB::table('links')
             ->join('follows', 'links.user_id', '=', 'follows.followed_id')
             ->where('follows.follower_id', '=', $user->id)
@@ -103,4 +102,8 @@ Route::any('/feed/{user}', array('before' => 'auth', function(User $user) {
     }
 
     return json_encode($links);
+}));
+
+Route::any('/feed/me', array('before' => 'auth', function() {
+	return Auth::user()->links;
 }));

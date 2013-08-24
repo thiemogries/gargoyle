@@ -40,11 +40,12 @@
                 // fire off the request
                 $.ajax({
                     // url: "user/new",
-                    url: "login",
-                    // url: "feed/1",
+                    // url: "login",
+                    url: "push",
                     type: "post",
                     // data: null,
-                    data: {"name": "Tesla", "password": "123456"},
+                    // data: {"name": "Tesla", "password": "123456"},
+                    data: {"url": "new post"},
                     // data: data,
                     success: function (response) {
                         console.log(response);
